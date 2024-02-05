@@ -1,0 +1,14 @@
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.AssemblyInfoInputs.cache
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.AssemblyInfo.cs
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.csproj.CoreCompileInputs.cache
+C:\Users\Acer\source\repos\oop\oop\bin\Debug\net6.0\oop.exe
+C:\Users\Acer\source\repos\oop\oop\bin\Debug\net6.0\oop.deps.json
+C:\Users\Acer\source\repos\oop\oop\bin\Debug\net6.0\oop.runtimeconfig.json
+C:\Users\Acer\source\repos\oop\oop\bin\Debug\net6.0\oop.dll
+C:\Users\Acer\source\repos\oop\oop\bin\Debug\net6.0\oop.pdb
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.dll
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\refint\oop.dll
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.pdb
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\oop.genruntimeconfig.cache
+C:\Users\Acer\source\repos\oop\oop\obj\Debug\net6.0\ref\oop.dll
