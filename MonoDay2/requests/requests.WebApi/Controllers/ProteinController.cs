@@ -34,36 +34,25 @@ namespace requests.WebApi.Controllers
         //GET : Get protein with filters
         public HttpResponseMessage GetProteinList(string flavor = null, double price = 0, int weight = 0)
         {
-            var filteredProteins = _proteinList;
-
-            if (flavor != null)
-            {
-                filteredProteins = filteredProteins.Where(p => p.Flavor.Equals(flavor)).ToList();
-            }
-
-            if (price != 0)
-            {
-                filteredProteins = filteredProteins.Where(p => p.Price == price).ToList();
-            }
-
-            if (weight != 0)
-            {
-                filteredProteins = filteredProteins.Where(p => p.Weight == weight).ToList();
-            }
+            var filteredProteins = _proteinList.Where(p =>
+                (string.IsNullOrEmpty(flavor) || p.Flavor.Equals(flavor, StringComparison.OrdinalIgnoreCase)) &&
+                (price == 0 || p.Price == price) &&
+                (weight == 0 || p.Weight == weight)
+            ).ToList();
 
             List<GetProtein> getProtein = new List<GetProtein>();
-            foreach(Protein protein in filteredProteins)
-            {
-                getProtein.Add(new GetProtein(protein.Flavor, protein.Price, protein.Weight));
-            }
 
-            if (getProtein.Any())
+            if(filteredProteins.Count > 0)
             {
+                foreach(Protein protein in filteredProteins)
+                {
+                    getProtein.Add(new GetProtein(protein.Flavor, protein.Price, protein.Weight));
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, getProtein);
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "No proteins match the specified criteria.");
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins match the specified criteria.");
             }
         }
 
@@ -89,22 +78,21 @@ namespace requests.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Body is empty");
             }
+            
+            int id = 0;
+            if (_proteinList.Count == 0)
+            {
+                id = 1;
+            }
             else
             {
-                int id = 0;
-                if (_proteinList.Count == 0)
-                {
-                    id = 1;
-                }
-                else
-                {
-                    int index = _proteinList.Max(p => p.Id);
-                    id = index + 1;
-                }
-
-                _proteinList.Add(new Protein(id,protein.Flavor,protein.Price,protein.Weight));
-                return Request.CreateResponse(HttpStatusCode.Created, $"Protein {protein.Flavor} successfully added");
+                int index = _proteinList.Max(p => p.Id);
+                id = index + 1;
             }
+
+            _proteinList.Add(new Protein(id,protein.Flavor,protein.Price,protein.Weight));
+            return Request.CreateResponse(HttpStatusCode.Created, $"Protein {protein.Flavor} successfully added");
+            
         }
 
         //PUT : Update protein price

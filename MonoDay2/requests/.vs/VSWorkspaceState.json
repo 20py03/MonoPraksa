@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\requests.WebApi",
+    "\\requests.WebApi\\Controllers",
+    "\\requests.WebApi\\Models"
+  ],
+  "SelectedNode": "\\requests.WebApi\\Controllers\\ProteinController.cs",
+  "PreviewInSolutionExplorer": false
+}
