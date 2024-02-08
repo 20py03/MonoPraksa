@@ -11,6 +11,7 @@ namespace requests.WebApi.Models
         public double Price { get; set; }
         public int Weight { get; set; }
 
+
         public GetProtein(string flavor, double price, int weight) {
             this.Flavor = flavor;
             this.Price = price;

@@ -7,125 +7,188 @@ using System.Web.Http;
 using requests.WebApi.Models;
 using System.Net.Http;
 using System.Net;
+using Npgsql;
+using System.Web.UI;
 
 namespace requests.WebApi.Controllers
 {
     public class ProteinController : ApiController
     {
         //static - postoji samo jedna instanca objekta
-        private static List<Protein> _proteinList = new List<Protein>();
+        private static List<Protein> proteinList = new List<Protein>();
+        private string connectionString = "Host=localhost;Port=5432;Database=Protein;Username=postgres;Password=postgres;";
+        NpgsqlConnection connection = new NpgsqlConnection();
+        NpgsqlCommand command = new NpgsqlCommand();
 
 
-        /*
-        // GET: Protein
-        public HttpResponseMessage GetProteinList()
+        //GET : Get protein
+        public HttpResponseMessage GetAllProteins()
         {
-            if (_proteinList != null && _proteinList.Count > 0)
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, _proteinList);
-            }
-            else
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Protein list is empty");
-            }
-        }
-        */
+            string CommandText = "SELECT * FROM \"Protein\"";
 
-        //GET : Get protein with filters
-        public HttpResponseMessage GetProteinList(string flavor = null, double price = 0, int weight = 0)
-        {
-            var filteredProteins = _proteinList.Where(p =>
-                (string.IsNullOrEmpty(flavor) || p.Flavor.Equals(flavor, StringComparison.OrdinalIgnoreCase)) &&
-                (price == 0 || p.Price == price) &&
-                (weight == 0 || p.Weight == weight)
-            ).ToList();
+            List<GetProtein> proteinList = new List<GetProtein>();
 
-            List<GetProtein> getProtein = new List<GetProtein>();
+            connection = new NpgsqlConnection(connectionString);
 
-            if(filteredProteins.Count > 0)
+            using (connection)
             {
-                foreach(Protein protein in filteredProteins)
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                connection.Open();
+
+                NpgsqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
                 {
-                    getProtein.Add(new GetProtein(protein.Flavor, protein.Price, protein.Weight));
+                    while (reader.Read())
+                    {
+                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+
+                        proteinList.Add(new GetProtein(flavor, price, weight));
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, proteinList);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, getProtein);
-            }
-            else
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins match the specified criteria.");
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+                }
             }
         }
+
 
         //GET : Get protein by id
-        public HttpResponseMessage GetProteinById(int id)
+        public HttpResponseMessage GetProteinById(Guid id)
         {
-            Protein protein = _proteinList.FirstOrDefault(p => p.Id == id);
+            string CommandText = "SELECT * FROM \"Protein\" WHERE \"Id\" = @Id";
 
-            if (protein != null)
+            List<GetProtein> proteinViews = new List<GetProtein>();
+
+            connection = new NpgsqlConnection(connectionString);
+
+            using (connection)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, protein);
-            }
-            else
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Protein with specified ID not found.");
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                NpgsqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+
+                        proteinViews.Add(new GetProtein(flavor, price, weight));
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, proteinViews);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Protein with ID {id} not found.");
+                }
             }
         }
+
 
         // POST : Add new protein
         public HttpResponseMessage PostAddNewProtein(CreateProtein protein)
         {
             if (protein == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Body is empty");
-            }
-            
-            int id = 0;
-            if (_proteinList.Count == 0)
-            {
-                id = 1;
-            }
-            else
-            {
-                int index = _proteinList.Max(p => p.Id);
-                id = index + 1;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Please enter some values.");
             }
 
-            _proteinList.Add(new Protein(id,protein.Flavor,protein.Price,protein.Weight));
-            return Request.CreateResponse(HttpStatusCode.Created, $"Protein {protein.Flavor} successfully added");
-            
+            connection = new NpgsqlConnection(connectionString);
+            using (connection)
+            {
+                Guid id = Guid.NewGuid();
+
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = connection;
+                command.CommandText = $"INSERT INTO \"Protein\" (\"Id\",\"Flavor\",\"Price\",\"Weight\",\"CategoryId\") VALUES (@id,@flavor,@price,@weight,@categoryId)";
+                command.Parameters.AddWithValue("id", id);
+                command.Parameters.AddWithValue("flavor", protein.Flavor);
+                command.Parameters.AddWithValue("price", protein.Price);
+                command.Parameters.AddWithValue("weight", protein.Weight);
+                command.Parameters.AddWithValue("categoryId", protein.CategoryId);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() <= 0)
+                {
+                    connection.Close();
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, $"Failed to add a new protein {protein.Flavor}");
+                }
+
+                connection.Close();
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, $"Added a new protein {protein.Flavor}");
         }
 
         //PUT : Update protein price
-        public HttpResponseMessage PutPriceById(int id, [FromBody] UpdateProtein update)
+        public HttpResponseMessage PutProteinPrice(Guid id, [FromBody] double newPrice)
         {
-            Protein proteinToUpdate = _proteinList.FirstOrDefault(p => p.Id == id);
+            try
+            {
+                string CommandText = "UPDATE \"Protein\" SET \"Price\" = @NewPrice WHERE \"Id\" = @Id";
 
-            if (proteinToUpdate != null)
-            {
-                proteinToUpdate.Price = update.Price;
-                return Request.CreateResponse(HttpStatusCode.OK, _proteinList);
+                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                {
+                    using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.Parameters.AddWithValue("@NewPrice", newPrice);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            return Request.CreateResponse(HttpStatusCode.OK, $"Price for protein with ID {id} updated successfully.");
+                        }
+                        else
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Protein with ID {id} not found.");
+                        }
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Protein with specified ID not found.");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error updating price for protein with ID {id}: {ex.Message}");
             }
         }
+
 
         //DELETE : Delete protein by id
-        public HttpResponseMessage DeleteFromList(int id)
+        public HttpResponseMessage DeleteProteinById(Guid id)
         {
-            Protein proteinToRemove = _proteinList.FirstOrDefault(p => p.Id == id);
+            string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
 
-            if (proteinToRemove != null)
+            connection = new NpgsqlConnection(connectionString);
+
+            using (connection)
             {
-                _proteinList.Remove(proteinToRemove);
-                return Request.CreateResponse(HttpStatusCode.OK, _proteinList);
-            }
-            else
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Protein with specified ID not found.");
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, $"Protein with ID {id} deleted successfully.");
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Protein with ID {id} not found.");
+                }
             }
         }
-
     }
 }
