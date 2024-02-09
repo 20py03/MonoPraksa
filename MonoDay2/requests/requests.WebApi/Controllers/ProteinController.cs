@@ -8,6 +8,9 @@ using System.Net.Http;
 using System.Net;
 using Npgsql;
 using System.Web.UI;
+using requests.Service;
+using requests.Model;
+using GetProteinWithCategory = requests.Model.GetProteinWithCategory;
 
 namespace requests.WebApi.Controllers
 {
@@ -20,20 +23,19 @@ namespace requests.WebApi.Controllers
         NpgsqlCommand command = new NpgsqlCommand();
 
 
-        /*
-        private readonly ProteinRepository _proteinRepository;
-
-        public ProteinService(ProteinRepository proteinRepository)
-        {
-            _proteinRepository = proteinRepository;
-        }
         // POST : Add new protein
-        public HttpResponseMessage AddNewProtein(CreateProtein protein)
+        public HttpResponseMessage PostAddNewProtein(CreateProtein protein)
         {
-            return _proteinRepository.AddNewProtein(protein);
-        }
-        */
+           ProteinService proteinService = new ProteinService();
 
+            Protein proteinToAdd = new Protein(protein.Flavor, protein.Price, protein.Weight, protein.CategoryId);
+            if (proteinService.CreateProtein(proteinToAdd) == 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Unable to create a new protein");
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, "Protein created successfully");
+        }
+        /*
         public HttpResponseMessage PostAddNewProtein(CreateProtein protein)
         {
             if (protein == null)
@@ -68,9 +70,26 @@ namespace requests.WebApi.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, $"Added a new protein {protein.Flavor}");
         }
-
+        */
 
         //GET : Get protein
+        public HttpResponseMessage GetProteinList()
+        {
+            ProteinService proteinService = new ProteinService();
+
+            List<GetProteinWithCategory> proteinList = proteinService.GetProtein();
+
+            if (proteinList != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, proteinList);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+            }
+        }
+
+        /*
         public HttpResponseMessage GetAllProteins()
         {
             string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
@@ -109,11 +128,26 @@ namespace requests.WebApi.Controllers
                 }
             }
         }
+        */
 
+        //GET : Get protein by id
+        public HttpResponseMessage GetProteinById(Guid id)
+        {
+            ProteinService proteinService = new ProteinService();
 
+            List<Protein> proteinList = proteinService.GetById(id);
 
-    //GET : Get protein by id
-    public HttpResponseMessage GetProteinById(Guid id)
+            if (proteinList != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, proteinList);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+            }
+        }
+        /*
+        public HttpResponseMessage GetProteinById(Guid id)
         {
             string CommandText = "SELECT * FROM \"Protein\" WHERE \"Id\" = @Id";
 
@@ -147,10 +181,28 @@ namespace requests.WebApi.Controllers
                 }
             }
         }
-
-
+        */
+        
         [HttpPut]
+        public HttpResponseMessage PutProteinPrice(Guid id,[FromBody] UpdateProtein protein)
+        {
+            ProteinService proteinService = new ProteinService();
+
+            int editResult = proteinService.PutPrice(id, protein.Price);
+
+            if (editResult == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, editResult);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+            }
+        }
+        
         //PUT : Update protein price
+
+        /*
         public HttpResponseMessage PutProteinPrice(Guid id, [FromBody] UpdateProtein protein)
         {
             try
@@ -183,10 +235,23 @@ namespace requests.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error updating price for protein with ID {id}: {ex.Message}");
             }
         }
-
+        */
 
 
         //DELETE : Delete protein by id
+        
+        public HttpResponseMessage DeleteProtein(Guid id)
+        {
+            ProteinService proteinService = new ProteinService();
+
+            int deleteResult = proteinService.DeleteProteinById(id);
+            if (deleteResult  == 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Unable to delete protein");
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, "Protein deleted successfully");
+        }
+        /*
         public HttpResponseMessage DeleteProteinById(Guid id)
         {
             string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
@@ -211,5 +276,6 @@ namespace requests.WebApi.Controllers
                 }
             }
         }
+        */
     }
 }

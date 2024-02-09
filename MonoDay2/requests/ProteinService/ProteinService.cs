@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProteinService
+namespace requests.Service
 {
-    public class Class1
+    public class ProteinService
     {
+
     }
 }

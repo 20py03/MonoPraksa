@@ -198,3 +198,11 @@ C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bi
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.Threading.Channels.xml
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.Threading.Tasks.Extensions.xml
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.ValueTuple.xml
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Model.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Service.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Repository.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Model.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Service.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Service.dll.config
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Repository.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Repository.dll.config

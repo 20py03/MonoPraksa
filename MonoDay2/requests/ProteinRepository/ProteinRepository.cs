@@ -5,21 +5,17 @@ using System.Net.Http;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using requests.Model;
+using Npgsql;
+using Repository.Common;
 
-namespace ProteinRepository
+namespace requests.Repository
 {
-    internal class ProteinRepository
+    public class ProteinRepository : IProteinRepository
     {
-
-        /*
-        private readonly string _connectionString;
-
-        public ProteinRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        public HttpResponseMessage AddNewProtein(CreateProtein protein)
+        private string _connectionString = "Host=localhost;Port=5432;Database=Protein;Username=postgres;Password=postgres;";
+            
+        public int AddNewProtein(Protein protein)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -39,21 +35,146 @@ namespace ProteinRepository
 
                     if (rowsAffected > 0)
                     {
-                        return new HttpResponseMessage(HttpStatusCode.OK)
-                        {
-                            Content = new StringContent($"Added a new protein {protein.Flavor}")
-                        };
+                        return 1;
                     }
                     else
                     {
-                        return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                        {
-                            Content = new StringContent($"Failed to add a new protein {protein.Flavor}")
-                        };
+                        return 0;
                     }
                 }
             }
         }
-        */
+
+        public List<GetProteinWithCategory> GetAllProteins()
+        {
+            string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
+                                 "FROM \"Protein\" p " +
+                                 "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\"";
+
+            List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
+                {
+                    connection.Open();
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                                double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                                int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                                bool isVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
+                                bool isAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
+                                bool isRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
+
+                                proteinList.Add(new GetProteinWithCategory(flavor, price, weight, isVegan, isAnabolic, isRecovery));
+                            }
+                            return proteinList;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
+        public int DeleteProtein(Guid id)
+        {
+            string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
+
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public List<Protein> GetProteinById(Guid id)
+        {
+            string CommandText = "SELECT * FROM \"Protein\" WHERE \"Id\" = @Id";
+
+            List<Protein> proteinViews = new List<Protein>();
+
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                NpgsqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+
+                        proteinViews.Add(new Protein(flavor, price, weight));
+                    }
+                    return proteinViews;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public int PutProteinPrice(Guid id, double price)
+        {
+            try
+            {
+                string CommandText = "UPDATE \"Protein\" SET \"Price\" = @NewPrice WHERE \"Id\" = @Id";
+
+                using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+                {
+                    using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.Parameters.AddWithValue("@NewPrice", price);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
     }
 }

@@ -9,8 +9,6 @@ namespace ProteinService
 {
     internal interface IProteinService
     {
-        /*
-        HttpResponseMessage AddNewProtein(CreateProtein protein);
-        */
+        HttpResponseMessage AddNewProtein(Protein protein);
     }
 }
