@@ -8,9 +8,9 @@ namespace requests.WebApi.Models
     public class UpdateProtein
     {
         public double Price { get; set; }
-        public UpdateProtein(double price)
+        public UpdateProtein(double newPrice)
         {
-            this.Price = price;
+            this.Price = newPrice;
         }
     }
 }

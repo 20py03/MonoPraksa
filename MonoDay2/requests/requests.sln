@@ -5,6 +5,10 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.WebApi", "requests.WebApi\requests.WebApi.csproj", "{D40DFB96-36FF-46F7-831B-B1EA2FF35793}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProteinService", "ProteinService\ProteinService.csproj", "{EFA77D75-84DE-4B7C-B513-8390EBDE45A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProteinRepository", "ProteinRepository\ProteinRepository.csproj", "{9E349660-6309-4A0E-8784-134F3A9C72A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{D40DFB96-36FF-46F7-831B-B1EA2FF35793}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D40DFB96-36FF-46F7-831B-B1EA2FF35793}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D40DFB96-36FF-46F7-831B-B1EA2FF35793}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA77D75-84DE-4B7C-B513-8390EBDE45A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA77D75-84DE-4B7C-B513-8390EBDE45A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA77D75-84DE-4B7C-B513-8390EBDE45A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA77D75-84DE-4B7C-B513-8390EBDE45A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E349660-6309-4A0E-8784-134F3A9C72A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E349660-6309-4A0E-8784-134F3A9C72A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E349660-6309-4A0E-8784-134F3A9C72A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E349660-6309-4A0E-8784-134F3A9C72A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

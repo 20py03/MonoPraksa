@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using System.Web.Http;
 using requests.WebApi.Models;
 using System.Net.Http;
@@ -20,6 +19,56 @@ namespace requests.WebApi.Controllers
         NpgsqlConnection connection = new NpgsqlConnection();
         NpgsqlCommand command = new NpgsqlCommand();
 
+
+        /*
+        private readonly ProteinRepository _proteinRepository;
+
+        public ProteinService(ProteinRepository proteinRepository)
+        {
+            _proteinRepository = proteinRepository;
+        }
+        // POST : Add new protein
+        public HttpResponseMessage AddNewProtein(CreateProtein protein)
+        {
+            return _proteinRepository.AddNewProtein(protein);
+        }
+        */
+
+        public HttpResponseMessage PostAddNewProtein(CreateProtein protein)
+        {
+            if (protein == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Please enter some values.");
+            }
+
+            connection = new NpgsqlConnection(connectionString);
+            using (connection)
+            {
+                Guid id = Guid.NewGuid();
+
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = connection;
+                command.CommandText = $"INSERT INTO \"Protein\" (\"Id\",\"Flavor\",\"Price\",\"Weight\",\"CategoryId\") VALUES (@id,@flavor,@price,@weight,@categoryId)";
+                command.Parameters.AddWithValue("id", id);
+                command.Parameters.AddWithValue("flavor", protein.Flavor);
+                command.Parameters.AddWithValue("price", protein.Price);
+                command.Parameters.AddWithValue("weight", protein.Weight);
+                command.Parameters.AddWithValue("categoryId", protein.CategoryId);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() <= 0)
+                {
+                    connection.Close();
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, $"Failed to add a new protein {protein.Flavor}");
+                }
+
+                connection.Close();
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, $"Added a new protein {protein.Flavor}");
+        }
+        
 
         //GET : Get protein
         public HttpResponseMessage GetAllProteins()
@@ -94,44 +143,9 @@ namespace requests.WebApi.Controllers
         }
 
 
-        // POST : Add new protein
-        public HttpResponseMessage PostAddNewProtein(CreateProtein protein)
-        {
-            if (protein == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Please enter some values.");
-            }
-
-            connection = new NpgsqlConnection(connectionString);
-            using (connection)
-            {
-                Guid id = Guid.NewGuid();
-
-                NpgsqlCommand command = new NpgsqlCommand();
-                command.Connection = connection;
-                command.CommandText = $"INSERT INTO \"Protein\" (\"Id\",\"Flavor\",\"Price\",\"Weight\",\"CategoryId\") VALUES (@id,@flavor,@price,@weight,@categoryId)";
-                command.Parameters.AddWithValue("id", id);
-                command.Parameters.AddWithValue("flavor", protein.Flavor);
-                command.Parameters.AddWithValue("price", protein.Price);
-                command.Parameters.AddWithValue("weight", protein.Weight);
-                command.Parameters.AddWithValue("categoryId", protein.CategoryId);
-
-                connection.Open();
-
-                if (command.ExecuteNonQuery() <= 0)
-                {
-                    connection.Close();
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, $"Failed to add a new protein {protein.Flavor}");
-                }
-
-                connection.Close();
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, $"Added a new protein {protein.Flavor}");
-        }
-
+        [HttpPut]
         //PUT : Update protein price
-        public HttpResponseMessage PutProteinPrice(Guid id, [FromBody] double newPrice)
+        public HttpResponseMessage PutProteinPrice(Guid id, [FromBody] UpdateProtein protein)
         {
             try
             {
@@ -142,7 +156,7 @@ namespace requests.WebApi.Controllers
                     using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
                     {
                         command.Parameters.AddWithValue("@Id", id);
-                        command.Parameters.AddWithValue("@NewPrice", newPrice);
+                        command.Parameters.AddWithValue("@NewPrice", protein.Price); 
 
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
@@ -163,6 +177,7 @@ namespace requests.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, $"Error updating price for protein with ID {id}: {ex.Message}");
             }
         }
+
 
 
         //DELETE : Delete protein by id
