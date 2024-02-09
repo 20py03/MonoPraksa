@@ -210,6 +210,7 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CreateProtein.cs" />
     <Compile Include="Models\GetProtein.cs" />
+    <Compile Include="Models\GetProteinWithCategory.cs" />
     <Compile Include="Models\Protein.cs" />
     <Compile Include="Models\UpdateProtein.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

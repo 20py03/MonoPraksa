@@ -68,46 +68,52 @@ namespace requests.WebApi.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, $"Added a new protein {protein.Flavor}");
         }
-        
+
 
         //GET : Get protein
         public HttpResponseMessage GetAllProteins()
         {
-            string CommandText = "SELECT * FROM \"Protein\"";
+            string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
+                                 "FROM \"Protein\" p " +
+                                 "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\"";
 
-            List<GetProtein> proteinList = new List<GetProtein>();
+            List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
-            connection = new NpgsqlConnection(connectionString);
-
-            using (connection)
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
-                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
-                connection.Open();
-
-                NpgsqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
                 {
-                    while (reader.Read())
+                    connection.Open();
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
-                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
-                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                                double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                                int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                                bool isVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
+                                bool isAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
+                                bool isRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
 
-                        proteinList.Add(new GetProtein(flavor, price, weight));
+                                proteinList.Add(new GetProteinWithCategory(flavor, price, weight, isVegan, isAnabolic, isRecovery));
+                            }
+                            return Request.CreateResponse(HttpStatusCode.OK, proteinList);
+                        }
+                        else
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+                        }
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, proteinList);
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
                 }
             }
         }
 
 
-        //GET : Get protein by id
-        public HttpResponseMessage GetProteinById(Guid id)
+
+    //GET : Get protein by id
+    public HttpResponseMessage GetProteinById(Guid id)
         {
             string CommandText = "SELECT * FROM \"Protein\" WHERE \"Id\" = @Id";
 
