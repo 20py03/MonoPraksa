@@ -11,34 +11,34 @@ namespace requests.Service
 {
     public class ProteinService : IProteinService
     {
-        public int CreateProtein(Protein protein)
+        public async Task<int> CreateProteinAsync(Protein protein)
         {
             ProteinRepository proteinRepository = new ProteinRepository();
-            return proteinRepository.AddNewProtein(protein);
+            return await proteinRepository.AddNewProteinAsync(protein);
         }
 
-        public List<GetProteinWithCategory> GetProtein()
+        public async Task<List<GetProteinWithCategory>> GetProteinAsync()
         {
             ProteinRepository proteinRepository = new ProteinRepository();
-            return proteinRepository.GetAllProteins();
+            return await proteinRepository.GetAllProteinsAsync();
         }
 
-        public int DeleteProteinById(Guid id)
+        public async Task<int> DeleteProteinByIdAsync(Guid id)
         {
             ProteinRepository proteinRepository = new ProteinRepository();
-            return proteinRepository.DeleteProtein(id);
+            return await proteinRepository.DeleteProteinAsync(id);
         }
 
-        public List<Protein> GetById(Guid id)
+        public async Task<List<Protein>> GetByIdAsync(Guid id)
         {
             ProteinRepository proteinRepository = new ProteinRepository();
-            return proteinRepository.GetProteinById(id);
+            return await proteinRepository.GetProteinByIdAsync(id);
         }
 
-        public int PutPrice(Guid id, double price)
+        public async Task<int> PutPriceAsync(Guid id, double price)
         {
             ProteinRepository proteinRepository = new ProteinRepository();
-            return proteinRepository.PutProteinPrice(id, price);
+            return await proteinRepository.PutProteinPriceAsync(id, price);
         }
         
     }

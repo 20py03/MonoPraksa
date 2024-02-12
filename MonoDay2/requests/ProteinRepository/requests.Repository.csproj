@@ -93,6 +93,10 @@
     <Compile Include="ProteinRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj">
+      <Project>{6c2e3614-1f79-4116-b266-807210f2df0d}</Project>
+      <Name>Repository.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\requests.Model\requests.Model.csproj">
       <Project>{D42ABB3F-1FC4-449D-89BB-1FB16ECA03E4}</Project>
       <Name>requests.Model</Name>

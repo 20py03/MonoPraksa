@@ -14,5 +14,6 @@ namespace Model.Common
         bool IsVegan { get; set; }
         bool IsAnabolic { get; set; }
         bool IsRecovery { get; set; }
+
     }
 }

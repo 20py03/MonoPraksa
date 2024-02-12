@@ -15,7 +15,7 @@ namespace requests.Repository
     {
         private string _connectionString = "Host=localhost;Port=5432;Database=Protein;Username=postgres;Password=postgres;";
             
-        public int AddNewProtein(Protein protein)
+        public async Task<int> AddNewProteinAsync(Protein protein)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -31,7 +31,7 @@ namespace requests.Repository
                     command.Parameters.AddWithValue("weight", protein.Weight);
                     command.Parameters.AddWithValue("categoryId", protein.CategoryId);
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
 
                     if (rowsAffected > 0)
                     {
@@ -45,7 +45,7 @@ namespace requests.Repository
             }
         }
 
-        public List<GetProteinWithCategory> GetAllProteins()
+        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync()
         {
             string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
                                  "FROM \"Protein\" p " +
@@ -58,7 +58,7 @@ namespace requests.Repository
                 using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
                 {
                     connection.Open();
-                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.HasRows)
                         {
@@ -84,7 +84,7 @@ namespace requests.Repository
             }
         }
 
-        public int DeleteProtein(Guid id)
+        public async Task<int> DeleteProteinAsync(Guid id)
         {
             string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
 
@@ -96,7 +96,7 @@ namespace requests.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 connection.Open();
-                int rowsAffected = command.ExecuteNonQuery();
+                int rowsAffected = await command.ExecuteNonQueryAsync();
 
                 if (rowsAffected > 0)
                 {
@@ -109,7 +109,7 @@ namespace requests.Repository
             }
         }
 
-        public List<Protein> GetProteinById(Guid id)
+        public async Task<List<Protein>> GetProteinByIdAsync(Guid id)
         {
             string CommandText = "SELECT * FROM \"Protein\" WHERE \"Id\" = @Id";
 
@@ -123,7 +123,7 @@ namespace requests.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 connection.Open();
-                NpgsqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
@@ -144,7 +144,7 @@ namespace requests.Repository
             }
         }
 
-        public int PutProteinPrice(Guid id, double price)
+        public async Task<int> PutProteinPriceAsync(Guid id, double price)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace requests.Repository
                         command.Parameters.AddWithValue("@NewPrice", price);
 
                         connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
 
                         if (rowsAffected > 0)
                         {

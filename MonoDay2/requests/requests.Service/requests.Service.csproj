@@ -53,6 +53,10 @@
       <Project>{d42abb3f-1fc4-449d-89bb-1fb16eca03e4}</Project>
       <Name>requests.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Service.Common\Service.Common.csproj">
+      <Project>{caa737b8-9202-4949-ab53-a90e6bce0597}</Project>
+      <Name>Service.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

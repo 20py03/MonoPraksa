@@ -8,10 +8,10 @@ namespace Service.Common
 {
     public interface IProteinService
     {
-        int CreateProtein(Protein protein);
-        List<GetProteinWithCategory> GetProtein();
-        int DeleteProteinById(Guid id);
-        List<Protein> GetById(Guid id);
-        int PutPrice(Guid id, double price);
+        Task<int> CreateProteinAsync(Protein protein);
+        Task<List<GetProteinWithCategory>> GetProteinAsync();
+        Task<int> DeleteProteinByIdAsync(Guid id);
+        Task<List<Protein>> GetByIdAsync(Guid id);
+        Task<int> PutPriceAsync(Guid id, double price);
     }
 }

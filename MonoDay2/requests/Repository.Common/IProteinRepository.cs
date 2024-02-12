@@ -9,10 +9,10 @@ namespace Repository.Common
 {
     public interface IProteinRepository
     {
-        int AddNewProtein(Protein protein);
-        List<GetProteinWithCategory> GetAllProteins();
-        int DeleteProtein(Guid id);
-        List<Protein> GetProteinById(Guid id);
-        int PutProteinPrice(Guid id, double price);
+        Task<int> AddNewProteinAsync(Protein protein);
+        Task<List<GetProteinWithCategory>> GetAllProteinsAsync();
+        Task<int> DeleteProteinAsync(Guid id);
+        Task<List<Protein>> GetProteinByIdAsync(Guid id);
+        Task<int> PutProteinPriceAsync(Guid id, double price);
     }
 }
