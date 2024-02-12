@@ -10,7 +10,7 @@ namespace Repository.Common
     public interface IProteinRepository
     {
         Task<int> AddNewProteinAsync(Protein protein);
-        Task<List<GetProteinWithCategory>> GetAllProteinsAsync();
+        Task<List<GetProteinWithCategory>> GetAllProteinsAsync(bool? isVegan = null, bool? isAnabolic = null, bool? isRecovery = null);
         Task<int> DeleteProteinAsync(Guid id);
         Task<List<Protein>> GetProteinByIdAsync(Guid id);
         Task<int> PutProteinPriceAsync(Guid id, double price);

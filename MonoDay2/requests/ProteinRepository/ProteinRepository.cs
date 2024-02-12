@@ -45,68 +45,50 @@ namespace requests.Repository
             }
         }
 
-        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync()
+        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync(bool? isVegan = null, bool? isAnabolic = null, bool? isRecovery = null)
         {
             string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
                                  "FROM \"Protein\" p " +
                                  "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\"";
 
+            var filters = new Dictionary<string, bool?>
+            {
+                { "Vegan", isVegan },
+                { "Anabolic", isAnabolic },
+                { "Recovery", isRecovery }
+            };
+
+            var activeFilters = filters.Where(f => f.Value.HasValue).ToDictionary(f => f.Key, f => f.Value);
+
+            if (activeFilters.Count > 0)
+            {
+                CommandText += " WHERE " + string.Join(" AND ", activeFilters.Select(f => $"c.\"{f.Key}\" = {f.Value}"));
+            }
+
             List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
             {
-                using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
-                {
-                    connection.Open();
-                    using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
-                                double price = reader.GetDouble(reader.GetOrdinal("Price"));
-                                int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
-                                bool isVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
-                                bool isAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
-                                bool isRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
+                await connection.OpenAsync();
 
-                                proteinList.Add(new GetProteinWithCategory(flavor, price, weight, isVegan, isAnabolic, isRecovery));
-                            }
-                            return proteinList;
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
+                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
+                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                        bool proteinIsVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
+                        bool proteinIsAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
+                        bool proteinIsRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
+
+                        proteinList.Add(new GetProteinWithCategory(flavor, price, weight, proteinIsVegan, proteinIsAnabolic, proteinIsRecovery));
                     }
                 }
             }
-        }
 
-        public async Task<int> DeleteProteinAsync(Guid id)
-        {
-            string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
-
-            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-
-            using (connection)
-            {
-                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
-                command.Parameters.AddWithValue("@Id", id);
-
-                connection.Open();
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                if (rowsAffected > 0)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            return proteinList;
         }
 
         public async Task<List<Protein>> GetProteinByIdAsync(Guid id)
@@ -144,10 +126,50 @@ namespace requests.Repository
             }
         }
 
+
+        public async Task<int> DeleteProteinAsync(Guid id)
+        {
+
+            List<Protein> proteinToDelete = await GetProteinByIdAsync(id);
+            if(proteinToDelete.Count == 0)
+            {
+                return 0;
+            }
+
+            string CommandText = "DELETE FROM \"Protein\" WHERE \"Id\" = @Id";
+
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                if (rowsAffected > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+
         public async Task<int> PutProteinPriceAsync(Guid id, double price)
         {
             try
             {
+                List<Protein> proteinToUpdate = await GetProteinByIdAsync(id);
+                if(proteinToUpdate.Count == 0)
+                {
+                    return 0;
+                }
+
                 string CommandText = "UPDATE \"Protein\" SET \"Price\" = @NewPrice WHERE \"Id\" = @Id";
 
                 using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
