@@ -12,22 +12,27 @@ using requests.Service;
 using requests.Model;
 using GetProteinWithCategory = requests.Model.GetProteinWithCategory;
 using System.Threading.Tasks;
+using Service.Common;
 
 namespace requests.WebApi.Controllers
 {
     public class ProteinController : ApiController
     {
         //static - postoji samo jedna instanca objekta
-        private static List<Protein> proteinList = new List<Protein>();
+        //private static List<Protein> proteinList = new List<Protein>();
+
+        private IProteinService _proteinService;
+        public ProteinController(IProteinService proteinService)
+        {
+            _proteinService = proteinService;
+        }
 
         // POST : Add new protein
         public async Task<HttpResponseMessage> PostAddNewProteinAsync(CreateProtein protein)
         {
-           ProteinService proteinService = new ProteinService();
-
             Protein proteinToAdd = new Protein(protein.Flavor, protein.Price, protein.Weight, protein.CategoryId);
-            int result = await proteinService.CreateProteinAsync(proteinToAdd);
-            if ( result == 0)
+            int result = await _proteinService.CreateProteinAsync(proteinToAdd);
+            if (result == 0)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Unable to create a new protein");
             }
@@ -74,9 +79,7 @@ namespace requests.WebApi.Controllers
         //GET : Get protein
         public async Task<HttpResponseMessage> GetProteinListAsync()
         {
-            ProteinService proteinService = new ProteinService();
-
-            List<GetProteinWithCategory> proteinList = await proteinService.GetProteinAsync();
+            List<GetProteinWithCategory> proteinList = await _proteinService.GetProteinAsync();
 
             if (proteinList != null)
             {
@@ -87,7 +90,6 @@ namespace requests.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
             }
         }
-
         /*
         public HttpResponseMessage GetAllProteins()
         {
@@ -133,10 +135,7 @@ namespace requests.WebApi.Controllers
         //GET : Get protein by id
         public async Task<HttpResponseMessage> GetProteinByIdAsync(Guid id)
         {
-            ProteinService proteinService = new ProteinService();
-
-            List<Protein> proteinList = await proteinService.GetByIdAsync(id);
-
+            List<Protein> proteinList = await _proteinService.GetByIdAsync(id);
 
             if (proteinList != null)
             {
@@ -183,15 +182,13 @@ namespace requests.WebApi.Controllers
             }
         }
         */
-        
+
 
         //PUT : Update protein price
         [HttpPut]
-        public async Task<HttpResponseMessage> PutProteinPriceAsync(Guid id,[FromBody] UpdateProtein protein)
+        public async Task<HttpResponseMessage> PutProteinPriceAsync(Guid id, [FromBody] UpdateProtein protein)
         {
-            ProteinService proteinService = new ProteinService();
-
-            int editResult = await proteinService.PutPriceAsync(id, protein.Price);
+            int editResult = await _proteinService.PutPriceAsync(id, protein.Price);
 
             if (editResult == 1)
             {
@@ -241,10 +238,8 @@ namespace requests.WebApi.Controllers
         //DELETE : Delete protein by id
         public async Task<HttpResponseMessage> DeleteProteinAsync(Guid id)
         {
-            ProteinService proteinService = new ProteinService();
-
-            int deleteResult = await proteinService.DeleteProteinByIdAsync(id);
-            if (deleteResult  == 0)
+            int deleteResult = await _proteinService.DeleteProteinByIdAsync(id);
+            if (deleteResult == 0)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Unable to delete protein");
             }

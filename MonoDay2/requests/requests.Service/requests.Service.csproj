@@ -49,6 +49,10 @@
       <Project>{9e349660-6309-4a0e-8784-134f3a9c72a1}</Project>
       <Name>requests.Repository</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj">
+      <Project>{6C2E3614-1F79-4116-B266-807210F2DF0D}</Project>
+      <Name>Repository.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\requests.Model\requests.Model.csproj">
       <Project>{d42abb3f-1fc4-449d-89bb-1fb16eca03e4}</Project>
       <Name>requests.Model</Name>
