@@ -93,13 +93,17 @@
     <Compile Include="ProteinRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj">
+    <ProjectReference Include="..\Repository.Common\requests.Repository.Common.csproj">
       <Project>{6c2e3614-1f79-4116-b266-807210f2df0d}</Project>
-      <Name>Repository.Common</Name>
+      <Name>requests.Repository.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\requests.Model\Model.csproj">
+    <ProjectReference Include="..\requests.Model\requests.Model.csproj">
       <Project>{D42ABB3F-1FC4-449D-89BB-1FB16ECA03E4}</Project>
-      <Name>Model</Name>
+      <Name>requests.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\requests.SortingPaging.Common\requests.Common.csproj">
+      <Project>{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}</Project>
+      <Name>requests.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

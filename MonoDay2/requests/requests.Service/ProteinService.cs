@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using requests.Repository;
 using Service.Common;
 using Repository.Common;
+using requests.SortingPaging.Common;
 
 namespace requests.Service
 {
@@ -24,9 +25,9 @@ namespace requests.Service
             return await _proteinRepository.AddNewProteinAsync(protein);
         }
 
-        public async Task<List<GetProteinWithCategory>> GetProteinAsync()
+        public async Task<List<GetProteinWithCategory>> GetProteinAsync(Filtering filtering, Sorting sorting, Paging paging)
         {
-            return await _proteinRepository.GetAllProteinsAsync();
+            return await _proteinRepository.GetAllProteinsAsync(filtering, sorting, paging);
         }
 
         public async Task<int> DeleteProteinByIdAsync(Guid id)

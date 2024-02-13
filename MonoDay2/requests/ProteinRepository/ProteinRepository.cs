@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using requests.Model;
 using Npgsql;
 using Repository.Common;
+using requests.SortingPaging.Common;
 
 namespace requests.Repository
 {
@@ -45,51 +46,70 @@ namespace requests.Repository
             }
         }
 
-        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync(bool? isVegan = null, bool? isAnabolic = null, bool? isRecovery = null)
+        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync(Filtering filtering, Sorting sorting, Paging paging)
         {
-            string CommandText = "SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
-                                 "FROM \"Protein\" p " +
-                                 "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\"";
+            NpgsqlCommand command = new NpgsqlCommand();
+            StringBuilder commandText = new StringBuilder("SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
+                "FROM \"Protein\" p " +
+                "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\" " +
+                "WHERE 1=1");
 
-            var filters = new Dictionary<string, bool?>
+            if (!string.IsNullOrWhiteSpace(filtering.Flavor))
             {
-                { "Vegan", isVegan },
-                { "Anabolic", isAnabolic },
-                { "Recovery", isRecovery }
-            };
-
-            var activeFilters = filters.Where(f => f.Value.HasValue).ToDictionary(f => f.Key, f => f.Value);
-
-            if (activeFilters.Count > 0)
-            {
-                CommandText += " WHERE " + string.Join(" AND ", activeFilters.Select(f => $"c.\"{f.Key}\" = {f.Value}"));
+                commandText.Append($" AND p.\"Flavor\" = @Flavor ");
+                command.Parameters.AddWithValue("@Flavor", filtering.Flavor);
             }
-
+            if (filtering.MinPrice != null)
+            {
+                commandText.Append($" AND p.\"Price\" >= @MinPrice");
+                command.Parameters.AddWithValue("minPrice", filtering.MinPrice);
+            }
+            if (filtering.MaxPrice != null)
+            {
+                commandText.Append($" AND p.\"Price\" <= @MaxPrice ");
+                command.Parameters.AddWithValue("maxVAlue", filtering.MaxPrice);
+            }
+            if (filtering.MinWeight != null)
+            {
+                commandText.Append($" AND p.\"Weight\" >= @MinWeight");
+                command.Parameters.AddWithValue("minWeight", filtering.MinWeight);
+            }
+            if (filtering.MaxWeight != null)
+            {
+                commandText.Append($" AND p.\"Weight\" <= @MaxWeight ");
+                command.Parameters.AddWithValue("maxWeight", filtering.MinWeight);
+            }
+            
+            commandText.Append($" ORDER BY \"{sorting.SortBy}\" {sorting.SortOrder} OFFSET {(paging.PageNumber - 1) * paging.PageSize} ROWS FETCH NEXT {paging.PageSize} ROWS ONLY");
+     
             List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
-            using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
+            using (command)
             {
+                command.Connection = connection;
+                command.CommandText = commandText.ToString();
                 await connection.OpenAsync();
 
                 using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
                     {
-                        string flavor = reader.GetString(reader.GetOrdinal("Flavor"));
-                        double price = reader.GetDouble(reader.GetOrdinal("Price"));
-                        int weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                        string flavorValue = reader.GetString(reader.GetOrdinal("Flavor"));
+                        double priceValue = reader.GetDouble(reader.GetOrdinal("Price"));
+                        int weightValue = reader.GetInt32(reader.GetOrdinal("Weight"));
                         bool proteinIsVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
                         bool proteinIsAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
                         bool proteinIsRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
 
-                        proteinList.Add(new GetProteinWithCategory(flavor, price, weight, proteinIsVegan, proteinIsAnabolic, proteinIsRecovery));
+                        proteinList.Add(new GetProteinWithCategory(flavorValue, priceValue, weightValue, proteinIsVegan, proteinIsAnabolic, proteinIsRecovery));
                     }
                 }
             }
 
             return proteinList;
         }
+
 
         public async Task<List<Protein>> GetProteinByIdAsync(Guid id)
         {

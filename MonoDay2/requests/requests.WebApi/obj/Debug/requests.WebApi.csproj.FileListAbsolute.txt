@@ -206,3 +206,15 @@ C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bi
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Service.dll.config
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Repository.pdb
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.Repository.dll.config
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Autofac.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Autofac.Integration.WebApi.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Repository.Common.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Service.Common.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Model.Common.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Repository.Common.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Service.Common.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Autofac.xml
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Autofac.Integration.WebApi.xml
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Model.Common.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.SortingPaging.Common.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.SortingPaging.Common.pdb

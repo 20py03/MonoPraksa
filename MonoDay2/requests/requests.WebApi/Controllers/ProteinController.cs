@@ -13,6 +13,7 @@ using requests.Model;
 using GetProteinWithCategory = requests.Model.GetProteinWithCategory;
 using System.Threading.Tasks;
 using Service.Common;
+using requests.SortingPaging.Common;
 
 namespace requests.WebApi.Controllers
 {
@@ -35,13 +36,17 @@ namespace requests.WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, "Protein created successfully");
         }
-        
 
-        public async Task<HttpResponseMessage> GetProteinListAsync()
+
+        public async Task<HttpResponseMessage> GetProteinListAsync(bool? isVegan = null, bool? isAnabolic = null, bool? isRecovery = null, string SortBy = "Price", string SortOrder = "ASC", int PageNumber = 1, int PageSize = 3, string flavor = null, double? minPrice = null, double? maxPrice = null, int? minWeight = null, int? maxWeight = null)
         {
-            List<GetProteinWithCategory> proteinList = await _proteinService.GetProteinAsync();
+            Sorting sorting = new Sorting(SortBy,SortOrder);
+            Paging paging = new Paging(PageNumber, PageSize);
+            Filtering filtering = new Filtering(isVegan, isAnabolic, isRecovery, flavor, minPrice, maxPrice, minWeight, maxWeight);
 
-            if (proteinList != null)
+            List<GetProteinWithCategory> proteinList = await _proteinService.GetProteinAsync(filtering, sorting, paging);
+
+            if (proteinList != null && proteinList.Count > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, proteinList);
             }
@@ -50,7 +55,6 @@ namespace requests.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
             }
         }
-        
 
         public async Task<HttpResponseMessage> GetProteinByIdAsync(Guid id)
         {

@@ -45,21 +45,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProteinRepository\Repository.csproj">
+    <ProjectReference Include="..\ProteinRepository\requests.Repository.csproj">
       <Project>{9e349660-6309-4a0e-8784-134f3a9c72a1}</Project>
-      <Name>Repository</Name>
+      <Name>requests.Repository</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository.Common\Repository.Common.csproj">
+    <ProjectReference Include="..\Repository.Common\requests.Repository.Common.csproj">
       <Project>{6C2E3614-1F79-4116-B266-807210F2DF0D}</Project>
-      <Name>Repository.Common</Name>
+      <Name>requests.Repository.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\requests.Model\Model.csproj">
+    <ProjectReference Include="..\requests.Model\requests.Model.csproj">
       <Project>{d42abb3f-1fc4-449d-89bb-1fb16eca03e4}</Project>
-      <Name>Model</Name>
+      <Name>requests.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Service.Common\Service.Common.csproj">
+    <ProjectReference Include="..\requests.SortingPaging.Common\requests.Common.csproj">
+      <Project>{1b6b6a59-c210-47ec-ad77-a5bda9451a19}</Project>
+      <Name>requests.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service.Common\requests.Service.Common.csproj">
       <Project>{caa737b8-9202-4949-ab53-a90e6bce0597}</Project>
-      <Name>Service.Common</Name>
+      <Name>requests.Service.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

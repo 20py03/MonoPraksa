@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "requests.WebApi\WebApi.csproj", "{D40DFB96-36FF-46F7-831B-B1EA2FF35793}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.WebApi", "requests.WebApi\requests.WebApi.csproj", "{D40DFB96-36FF-46F7-831B-B1EA2FF35793}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "ProteinRepository\Repository.csproj", "{9E349660-6309-4A0E-8784-134F3A9C72A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Repository", "ProteinRepository\requests.Repository.csproj", "{9E349660-6309-4A0E-8784-134F3A9C72A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "requests.Model\Model.csproj", "{D42ABB3F-1FC4-449D-89BB-1FB16ECA03E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Model", "requests.Model\requests.Model.csproj", "{D42ABB3F-1FC4-449D-89BB-1FB16ECA03E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "requests.Service\Service.csproj", "{C0D7CCFF-8B91-4C05-BB67-A5AE15CF7AC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Service", "requests.Service\requests.Service.csproj", "{C0D7CCFF-8B91-4C05-BB67-A5AE15CF7AC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Common", "Repository.Common\Repository.Common.csproj", "{6C2E3614-1F79-4116-B266-807210F2DF0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Repository.Common", "Repository.Common\requests.Repository.Common.csproj", "{6C2E3614-1F79-4116-B266-807210F2DF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common", "Service.Common\Service.Common.csproj", "{CAA737B8-9202-4949-AB53-A90E6BCE0597}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Service.Common", "Service.Common\requests.Service.Common.csproj", "{CAA737B8-9202-4949-AB53-A90E6BCE0597}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.Common", "Model.Common\Model.Common.csproj", "{42C681E0-4095-408F-80B2-69E181AF145B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Model.Common", "Model.Common\requests.Model.Common.csproj", "{42C681E0-4095-408F-80B2-69E181AF145B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "requests.Common", "requests.SortingPaging.Common\requests.Common.csproj", "{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{42C681E0-4095-408F-80B2-69E181AF145B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42C681E0-4095-408F-80B2-69E181AF145B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42C681E0-4095-408F-80B2-69E181AF145B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6B6A59-C210-47EC-AD77-A5BDA9451A19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

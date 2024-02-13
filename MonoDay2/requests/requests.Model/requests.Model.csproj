@@ -47,9 +47,9 @@
     <Compile Include="Protein.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.Common\Model.Common.csproj">
+    <ProjectReference Include="..\Model.Common\requests.Model.Common.csproj">
       <Project>{42c681e0-4095-408f-80b2-69e181af145b}</Project>
-      <Name>Model.Common</Name>
+      <Name>requests.Model.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
