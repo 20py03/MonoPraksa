@@ -84,7 +84,9 @@ namespace requests.Repository
      
             List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
+
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+
             using (command)
             {
                 command.Connection = connection;
