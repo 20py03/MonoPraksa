@@ -1,0 +1,99 @@
+body{
+    margin: 0;
+}
+
+.welcome_header{
+    font-size: 2em;
+    color: #64819b;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.action_header{
+    font-size: 1.5em;
+    color: #042f54;
+    text-align: center;
+}
+
+.ordered_list{
+    list-style-type: none;
+    font-size: 1.5em;
+    color: #042f54;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+a{
+    text-decoration: none;
+    color: #64819b;
+}
+
+a:hover{
+    color: #042f54;
+}
+
+.addForm{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+input{
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.5em;
+    border-radius: 15px;
+}
+
+.addProtein{
+    background-color: #64819b;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1.5em;
+    border-radius: 15px;
+}
+
+label{
+    font-size: 1.5em;
+    color: #042f54;
+}
+
+#proteinsTable{
+    color:#042f54;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#proteinsTable th{
+    background-color: #64819b;
+    color: white;
+    font-size: 1.5em;
+    padding: 10px;
+}
+
+#proteinsTable td{
+    font-size: 1.5em;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #64819b;
+}
+
+#proteinsTable button{
+    background-color: #64819b;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 15px;
+    margin: 10px;
+}
+
+#proteinsTable button:hover{
+    background-color: #042f54;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/functions.js"></script>
+    <title>YourProtein</title>
+</head>
+<body>
+    <div class="welcome_header"><h1>Add your protein!</h1></div>
+    <hr>
+    <form id="proteinForm" onsubmit="addProtein(event)" class="addForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        
+        <label for="flavor">Flavor:</label>
+        <input type="text" id="flavor" name="flavor"><br><br>
+        
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price"><br><br>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity"><br><br>
+        
+       <input type="submit" value="Add protein" class="addProtein">
+      </form>
+</body>
+</html>
