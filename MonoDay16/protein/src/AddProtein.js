@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function AddProtein() {
+function AddProtein({setProteins}) {
     const [name, setName] = useState('');
     const [flavor, setFlavor] = useState('');
     const [price, setPrice] = useState('');
@@ -25,12 +25,12 @@ function AddProtein() {
 
         proteins.push(protein);
         localStorage.setItem("proteins", JSON.stringify(proteins));
+        setProteins(proteins);
         alert("Protein added successfully!");
         setName('');
         setFlavor('');
         setPrice('');
         setQuantity('');
-        document.location.reload();
     }
 
     return (

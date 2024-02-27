@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-function ProteinList() {
+function ProteinList({proteins, setProteins}) {
     const [editId, setEditId] = useState(null);
     const [editedProtein, setEditedProtein] = useState(null);
-    const [proteins, setProteins] = useState([]);
 
     useEffect(() => {
         const storedProteins = JSON.parse(localStorage.getItem("proteins")) || [];
