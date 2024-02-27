@@ -1,27 +1,23 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function ProteinList() {
     const [editId, setEditId] = useState(null);
     const [editedProtein, setEditedProtein] = useState(null);
+    const [proteins, setProteins] = useState([]);
 
-    let proteins = JSON.parse(localStorage.getItem("proteins")) || [];
+    useEffect(() => {
+        const storedProteins = JSON.parse(localStorage.getItem("proteins")) || [];
+        setProteins(storedProteins);
+    }, []);
 
     const handleDelete = (id) => {
         let deleteConfirmed = window.confirm("Are you sure you want to delete this protein?");
     
         if (deleteConfirmed) {
-            let proteins = JSON.parse(localStorage.getItem("proteins"));
-            const indexToDelete = proteins.findIndex(protein => protein.id === id);
-    
-            if (indexToDelete !== -1) {
-                proteins.splice(indexToDelete, 1);
-                localStorage.setItem("proteins", JSON.stringify(proteins));
-                document.location.reload();
-                alert("Protein deleted successfully!");
-            } else {
-                alert("Protein not found!");
-            }
+            const updatedProteins = proteins.filter(protein => protein.id !== id);
+            localStorage.setItem("proteins", JSON.stringify(updatedProteins));
+            setProteins(updatedProteins);
+            alert("Protein deleted successfully!");
         } else {
             console.log("Delete canceled.");
         }
@@ -53,8 +49,9 @@ function ProteinList() {
         });
 
         localStorage.setItem("proteins", JSON.stringify(updatedProteins));
+        setProteins(updatedProteins);
         alert("Protein edited successfully!");
-        window.location.reload();
+        setEditId(null);
     }
     
     return (

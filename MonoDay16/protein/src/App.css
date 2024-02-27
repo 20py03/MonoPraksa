@@ -95,3 +95,16 @@ table th, td {
   background-color: #042f54;
 }
 
+.addProteinContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.proteinImage{
+  width: 500px;
+  height: 500px;
+  padding: 40px 0px;
+  margin-left: 200px;
+}
