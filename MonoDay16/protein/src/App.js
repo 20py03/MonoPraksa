@@ -1,10 +1,11 @@
 import './App.css';
 import Footer from './Footer';
 import Navbar from './Navbar';
-import AddProtein from './AddProtein';
+//import AddProtein from './AddProtein';
 import ProteinList from './ProteinList';
 import protein from './protein.jpg';
 import { useState } from 'react';
+import AddProteinClass from './AddProteinClass';
 
 function App() {
   const [proteins, setProteins] = useState([]);
@@ -14,7 +15,7 @@ function App() {
     <Navbar/>
     <div id="action_header" class="action_header"><h3>Add your favourite</h3></div>
     <div className='addProteinContainer'>
-      <div><AddProtein setProteins={setProteins} /></div>
+      <div><AddProteinClass setProteins={setProteins} /></div>
       <div><img src={protein} alt="protein" className="proteinImage"/></div>
     </div>
     <hr></hr>
