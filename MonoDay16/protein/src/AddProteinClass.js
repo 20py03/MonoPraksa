@@ -49,7 +49,7 @@ class AddProteinClass extends React.Component {
                 <label htmlFor="flavor">Flavor:</label>
                 <input type="text" id="flavor" name="flavor" value={flavor} onChange={this.handleChange} /><br /><br />
 
-                <label htmlFor="price">Price:</label>
+                <label htmlFor="price">Price(€):</label>
                 <input type="number" id="price" name="price" value={price} onChange={this.handleChange} /><br /><br />
 
                 <label htmlFor="quantity">Quantity:</label>

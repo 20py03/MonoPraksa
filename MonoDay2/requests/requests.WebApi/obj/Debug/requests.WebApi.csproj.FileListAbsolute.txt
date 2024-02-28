@@ -218,3 +218,9 @@ C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bi
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Model.Common.pdb
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.SortingPaging.Common.dll
 C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\requests.SortingPaging.Common.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Newtonsoft.Json.Bson.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.Web.Cors.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.Web.Http.Cors.dll
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Newtonsoft.Json.Bson.pdb
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\Newtonsoft.Json.Bson.xml
+C:\Users\Acer\Desktop\MonoPraksa\MonoPraksa\MonoDay2\requests\requests.WebApi\bin\System.Web.Http.Cors.xml

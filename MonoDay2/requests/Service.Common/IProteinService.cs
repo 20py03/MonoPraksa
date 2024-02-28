@@ -15,5 +15,8 @@ namespace Service.Common
         Task<int> DeleteProteinByIdAsync(Guid id);
         Task<List<Protein>> GetByIdAsync(Guid id);
         Task<int> PutPriceAsync(Guid id, double price);
+
+        Task<List<Category>> GetCategoryListAsync();
+        Task<int> AddCategoryNameByIdAsync(Guid id, string categoryName);
     }
 }

@@ -15,5 +15,9 @@ namespace Repository.Common
         Task<int> DeleteProteinAsync(Guid id);
         Task<List<Protein>> GetProteinByIdAsync(Guid id);
         Task<int> PutProteinPriceAsync(Guid id, double price);
+
+        Task<List<Category>> GetCategoryListAsync();
+
+        Task<int> AddCategoryNameByIdAsync(Guid id, string categoryName);
     }
 }

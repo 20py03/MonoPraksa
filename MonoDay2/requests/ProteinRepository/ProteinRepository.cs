@@ -9,6 +9,8 @@ using requests.Model;
 using Npgsql;
 using Repository.Common;
 using requests.SortingPaging.Common;
+using System.Diagnostics;
+using System.Runtime.Remoting.Messaging;
 
 namespace requests.Repository
 {
@@ -56,28 +58,28 @@ namespace requests.Repository
 
             if (!string.IsNullOrWhiteSpace(filtering.Flavor))
             {
-                commandText.Append($" AND p.\"Flavor\" = @Flavor ");
+                commandText.Append($" AND p.\"Flavor\" LIKE @Flavor ");
                 command.Parameters.AddWithValue("@Flavor", filtering.Flavor);
             }
             if (filtering.MinPrice != null)
             {
                 commandText.Append($" AND p.\"Price\" >= @MinPrice");
-                command.Parameters.AddWithValue("minPrice", filtering.MinPrice);
+                command.Parameters.AddWithValue("@MinPrice", filtering.MinPrice);
             }
             if (filtering.MaxPrice != null)
             {
                 commandText.Append($" AND p.\"Price\" <= @MaxPrice ");
-                command.Parameters.AddWithValue("maxVAlue", filtering.MaxPrice);
+                command.Parameters.AddWithValue("@MaxPrice", filtering.MaxPrice);
             }
             if (filtering.MinWeight != null)
             {
                 commandText.Append($" AND p.\"Weight\" >= @MinWeight");
-                command.Parameters.AddWithValue("minWeight", filtering.MinWeight);
+                command.Parameters.AddWithValue("@MinWeight", filtering.MinWeight);
             }
             if (filtering.MaxWeight != null)
             {
                 commandText.Append($" AND p.\"Weight\" <= @MaxWeight ");
-                command.Parameters.AddWithValue("maxWeight", filtering.MinWeight);
+                command.Parameters.AddWithValue("@MaxWeight", filtering.MaxWeight);
             }
             
             commandText.Append($" ORDER BY \"{sorting.SortBy}\" {sorting.SortOrder} OFFSET {(paging.PageNumber - 1) * paging.PageSize} ROWS FETCH NEXT {paging.PageSize} ROWS ONLY");
@@ -85,6 +87,7 @@ namespace requests.Repository
             List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+
             using (command)
             {
                 command.Connection = connection;
@@ -95,6 +98,7 @@ namespace requests.Repository
                 {
                     while (await reader.ReadAsync())
                     {
+                        Guid id = reader.GetGuid(reader.GetOrdinal("Id"));
                         string flavorValue = reader.GetString(reader.GetOrdinal("Flavor"));
                         double priceValue = reader.GetDouble(reader.GetOrdinal("Price"));
                         int weightValue = reader.GetInt32(reader.GetOrdinal("Weight"));
@@ -102,7 +106,7 @@ namespace requests.Repository
                         bool proteinIsAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
                         bool proteinIsRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
 
-                        proteinList.Add(new GetProteinWithCategory(flavorValue, priceValue, weightValue, proteinIsVegan, proteinIsAnabolic, proteinIsRecovery));
+                        proteinList.Add(new GetProteinWithCategory(id,flavorValue, priceValue, weightValue, proteinIsVegan, proteinIsAnabolic, proteinIsRecovery));
                     }
                 }
             }
@@ -146,6 +150,59 @@ namespace requests.Repository
             }
         }
 
+        public async Task<List<Category>> GetCategoryListAsync()
+
+        {
+            string CommandText = "SELECT * FROM \"Category\"";
+
+            List<Category> categoryViews = new List<Category>();
+
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand(CommandText, connection);
+                connection.Open();
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Guid id = reader.GetGuid(reader.GetOrdinal("Id"));
+                        bool isVegan = reader.GetBoolean(reader.GetOrdinal("Vegan"));
+                        bool isAnabolic = reader.GetBoolean(reader.GetOrdinal("Anabolic"));
+                        bool isRecovery = reader.GetBoolean(reader.GetOrdinal("Recovery"));
+                        string name = reader.GetString(reader.GetOrdinal("Name"));
+
+                        Category category = new Category(id, isVegan,isAnabolic, isRecovery,name);
+                        categoryViews.Add(category);
+                    }
+                    return categoryViews;
+                }else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<int> AddCategoryNameByIdAsync(Guid id, string categoryName)
+        {
+            string CommandText = "UPDATE \"Category\" SET \"Name\" = @Name WHERE \"Id\" = @Id";
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                using (NpgsqlCommand command = new NpgsqlCommand(CommandText, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@Name", categoryName);
+
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected;
+                }
+            }
+        }
 
         public async Task<int> DeleteProteinAsync(Guid id)
         {

@@ -44,5 +44,14 @@ namespace requests.Service
         {
             return await _proteinRepository.PutProteinPriceAsync(id, price);
         }
+        public async Task<List<Category>> GetCategoryListAsync()
+        {
+            return await _proteinRepository.GetCategoryListAsync();
+        }
+
+        public async Task<int> AddCategoryNameByIdAsync(Guid id, string categoryName)
+        {
+            return await _proteinRepository.AddCategoryNameByIdAsync(id, categoryName);
+        }
     }
 }

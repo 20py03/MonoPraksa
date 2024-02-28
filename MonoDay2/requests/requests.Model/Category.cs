@@ -17,19 +17,23 @@ namespace requests.Model
 
         public bool IsRecovery { get; set; }
 
-        public Category (Guid id, bool isVegan, bool isAnabolic, bool isRecovery)
+        public string Name { get; set; }
+
+        public Category (Guid id, bool isVegan, bool isAnabolic, bool isRecovery, string name)
         {
             Id = id;
             IsVegan = isVegan;
             IsAnabolic = isAnabolic;
             IsRecovery = isRecovery;
+            Name = name;
         }
 
-        public Category(bool isVegan, bool isAnabolic, bool isRecovery)
+        public Category(bool isVegan, bool isAnabolic, bool isRecovery, string name)
         {
             IsVegan = isVegan;
             IsAnabolic = isAnabolic;
             IsRecovery = isRecovery;
+            Name = name;
         }
 
     }

@@ -69,7 +69,36 @@ namespace requests.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
             }
         }
-       
+
+        [Route("Api/Protein/Categories")]
+        public async Task<HttpResponseMessage> GetCategoryListAsync()
+        {
+            List<Category> categoryList = await _proteinService.GetCategoryListAsync();
+
+            if (categoryList != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, categoryList);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "No proteins found.");
+            }
+        }
+        [Route("Api/Protein/Categories/{id}")]
+        public async Task<HttpResponseMessage> AddCategoryNameByIdAsync([FromUri]Guid id, [FromBody] string categoryName)
+        {
+           
+            int rowsAffected = await _proteinService.AddCategoryNameByIdAsync(id, categoryName);
+            if (rowsAffected > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, "Added category name");
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Error while adding category name");
+            }
+            
+        }
 
         [HttpPut]
         public async Task<HttpResponseMessage> PutProteinPriceAsync(Guid id, [FromBody] UpdateProtein protein)
@@ -96,6 +125,6 @@ namespace requests.WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, "Protein deleted successfully");
         }
-        
+
     }
 }

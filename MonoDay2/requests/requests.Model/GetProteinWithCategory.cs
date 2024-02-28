@@ -9,6 +9,7 @@ namespace requests.Model
 {
     public class GetProteinWithCategory : IGetProteinWithCategory
     {
+        public Guid Id { get; set; }
         public string Flavor { get; set; }
         public double Price { get; set; }
         public int Weight { get; set; }
@@ -16,8 +17,9 @@ namespace requests.Model
         public bool IsAnabolic { get; set; }
         public bool IsRecovery { get; set; }
 
-        public GetProteinWithCategory(string flavor, double price, int weight, bool isVegan, bool isAnabolic, bool isRecovery)
+        public GetProteinWithCategory(Guid id, string flavor, double price, int weight, bool isVegan, bool isAnabolic, bool isRecovery)
         {
+            Id = id;
             Flavor = flavor;
             Price = price;
             Weight = weight;
