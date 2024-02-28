@@ -131,7 +131,7 @@ namespace requests.Repository
             {
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
-                StringBuilder querryBuilder = new StringBuilder("SELECT COUNT(*) FROM \"Protein\" WHERE 1=1");
+                StringBuilder querryBuilder = new StringBuilder("SELECT COUNT(*) FROM \"Protein\" p WHERE 1=1");
                 SetFilters(querryBuilder, filtering, command);
                 command.CommandText = querryBuilder.ToString();
                 connection.Open();

@@ -56,8 +56,7 @@ function ProteinList({proteins, setProteins}) {
                     sortBy: sorting.sortBy,
                     sortOrder: sorting.sortOrder,
                     pageNumber: paging.pageNumber,
-                    pageSize: paging.pageSize,
-                    totalCount: paging.totalCount
+                    pageSize: paging.pageSize
                 }
             });
             setProteins(response.data.proteins);
