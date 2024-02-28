@@ -11,7 +11,7 @@ namespace Service.Common
     public interface IProteinService
     {
         Task<int> CreateProteinAsync(Protein protein);
-        Task<List<GetProteinWithCategory>> GetProteinAsync(Filtering filtering, Sorting sorting, Paging paging);
+        Task<PagedList<GetProteinWithCategory>> GetProteinAsync(Filtering filtering, Sorting sorting, Paging paging);
         Task<int> DeleteProteinByIdAsync(Guid id);
         Task<List<Protein>> GetByIdAsync(Guid id);
         Task<int> PutPriceAsync(Guid id, double price);

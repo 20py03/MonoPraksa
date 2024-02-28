@@ -25,7 +25,7 @@ namespace requests.Service
             return await _proteinRepository.AddNewProteinAsync(protein);
         }
 
-        public async Task<List<GetProteinWithCategory>> GetProteinAsync(Filtering filtering, Sorting sorting, Paging paging)
+        public async Task<PagedList<GetProteinWithCategory>> GetProteinAsync(Filtering filtering, Sorting sorting, Paging paging)
         {
             return await _proteinRepository.GetAllProteinsAsync(filtering, sorting, paging);
         }

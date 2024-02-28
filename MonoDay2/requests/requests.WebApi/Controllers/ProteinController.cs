@@ -44,9 +44,9 @@ namespace requests.WebApi.Controllers
             Paging paging = new Paging(PageNumber, PageSize);
             Filtering filtering = new Filtering(isVegan, isAnabolic, isRecovery, flavor, minPrice, maxPrice, minWeight, maxWeight);
 
-            List<GetProteinWithCategory> proteinList = await _proteinService.GetProteinAsync(filtering, sorting, paging);
+            PagedList<GetProteinWithCategory> proteinList = await _proteinService.GetProteinAsync(filtering, sorting, paging);
 
-            if (proteinList != null && proteinList.Count > 0)
+            if (proteinList != null && proteinList.List.Count > 0)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, proteinList);
             }

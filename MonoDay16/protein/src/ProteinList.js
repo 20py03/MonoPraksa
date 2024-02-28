@@ -7,10 +7,10 @@ function ProteinList({proteins, setProteins}) {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState({ flavor: '', minPrice: '', maxPrice: '', minWeight: '', maxWeight: '' });
     const [sorting, setSorting] = useState({ sortBy: 'Price', sortOrder: 'ASC' });
-    const [paging, setPaging] = useState({ pageNumber: 1, pageSize: 10 });     
+    const [paging, setPaging] = useState({ pageNumber: 1, pageSize: 5, totalPages: 0});     
 
     useEffect(() => {
-        let url = `https://localhost:44371/Api/Protein?PageNumber=${paging.pageNumber}&SortBy=${sorting.sortBy}&SortOrder=${sorting.sortOrder}`;
+        let url = `https://localhost:44371/Api/Protein?PageNumber=${paging.pageNumber}&SortBy=${sorting.sortBy}&SortOrder=${sorting.sortOrder}&PageSize=${paging.pageSize}`;
 
         if (filter.flavor) {
             url += `&Flavor=${filter.flavor}`;
@@ -31,7 +31,8 @@ function ProteinList({proteins, setProteins}) {
         const fetchData = async () => {
             try {
                 const response = await axios.get(url);
-                setProteins(response.data);
+                setProteins(response.data.list);
+                setPaging({...paging, pageSize: response.data.pageSize, totalPages: response.data.pageCount });
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
@@ -55,7 +56,8 @@ function ProteinList({proteins, setProteins}) {
                     sortBy: sorting.sortBy,
                     sortOrder: sorting.sortOrder,
                     pageNumber: paging.pageNumber,
-                    pageSize: paging.pageSize
+                    pageSize: paging.pageSize,
+                    totalCount: paging.totalCount
                 }
             });
             setProteins(response.data.proteins);
@@ -121,6 +123,10 @@ function ProteinList({proteins, setProteins}) {
     };
 
     const handlePageChange = (number) => {
+        console.log(paging.totalPages);
+        if (number < 1 || number> paging.totalPages) {
+            return;
+        }
         setPaging({ ...paging, pageNumber: number });
     };
 
@@ -228,7 +234,7 @@ function ProteinList({proteins, setProteins}) {
         <div className="pagination">
             <button className="pagingBtn" onClick={() => handlePageChange(paging.pageNumber - 1)} disabled={paging.pageNumber === 1}>{'<<'}</button>
             <span>{paging.pageNumber}</span>
-            <button className="pagingBtn" onClick={() => handlePageChange(paging.pageNumber + 1)}>{'>>'}</button>
+            <button className="pagingBtn" onClick={() => handlePageChange(paging.pageNumber + 1)} disabled={paging.pageNumber === paging.totalPages}>{'>>'}</button>
         </div>
         </>
     );

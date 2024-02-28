@@ -11,6 +11,7 @@ using Repository.Common;
 using requests.SortingPaging.Common;
 using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
+using System.Numerics;
 
 namespace requests.Repository
 {
@@ -48,7 +49,7 @@ namespace requests.Repository
             }
         }
 
-        public async Task<List<GetProteinWithCategory>> GetAllProteinsAsync(Filtering filtering, Sorting sorting, Paging paging)
+        public async Task<PagedList<GetProteinWithCategory>> GetAllProteinsAsync(Filtering filtering, Sorting sorting, Paging paging)
         {
             NpgsqlCommand command = new NpgsqlCommand();
             StringBuilder commandText = new StringBuilder("SELECT p.*, c.\"Vegan\", c.\"Anabolic\", c.\"Recovery\" " +
@@ -56,34 +57,14 @@ namespace requests.Repository
                 "JOIN \"Category\" c ON p.\"CategoryId\" = c.\"Id\" " +
                 "WHERE 1=1");
 
-            if (!string.IsNullOrWhiteSpace(filtering.Flavor))
+            SetFilters(commandText, filtering, command);
+            if (!string.IsNullOrEmpty(sorting.SortBy) && paging.PageNumber > 0 && paging.PageSize > 0)
             {
-                commandText.Append($" AND p.\"Flavor\" LIKE @Flavor ");
-                command.Parameters.AddWithValue("@Flavor", filtering.Flavor);
+                commandText.Append($" ORDER BY \"{sorting.SortBy}\" {sorting.SortOrder} OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+                command.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
+                command.Parameters.AddWithValue("@PageSize", paging.PageSize);
             }
-            if (filtering.MinPrice != null)
-            {
-                commandText.Append($" AND p.\"Price\" >= @MinPrice");
-                command.Parameters.AddWithValue("@MinPrice", filtering.MinPrice);
-            }
-            if (filtering.MaxPrice != null)
-            {
-                commandText.Append($" AND p.\"Price\" <= @MaxPrice ");
-                command.Parameters.AddWithValue("@MaxPrice", filtering.MaxPrice);
-            }
-            if (filtering.MinWeight != null)
-            {
-                commandText.Append($" AND p.\"Weight\" >= @MinWeight");
-                command.Parameters.AddWithValue("@MinWeight", filtering.MinWeight);
-            }
-            if (filtering.MaxWeight != null)
-            {
-                commandText.Append($" AND p.\"Weight\" <= @MaxWeight ");
-                command.Parameters.AddWithValue("@MaxWeight", filtering.MaxWeight);
-            }
-            
-            commandText.Append($" ORDER BY \"{sorting.SortBy}\" {sorting.SortOrder} OFFSET {(paging.PageNumber - 1) * paging.PageSize} ROWS FETCH NEXT {paging.PageSize} ROWS ONLY");
-     
+
             List<GetProteinWithCategory> proteinList = new List<GetProteinWithCategory>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
@@ -110,8 +91,57 @@ namespace requests.Repository
                     }
                 }
             }
+            int totalCount = await GetTotalProteinCount(filtering);
+            return new PagedList<GetProteinWithCategory>(proteinList, paging.PageSize, totalCount);
+        }
 
-            return proteinList;
+        public void SetFilters(StringBuilder commandText, Filtering filtering, NpgsqlCommand command)
+        {
+            if (!string.IsNullOrWhiteSpace(filtering.Flavor))
+            {
+                commandText.Append($" AND p.\"Flavor\" LIKE @Flavor ");
+                command.Parameters.AddWithValue("@Flavor", filtering.Flavor);
+            }
+            if (filtering.MinPrice != null)
+            {
+                commandText.Append($" AND p.\"Price\" >= @MinPrice");
+                command.Parameters.AddWithValue("@MinPrice", filtering.MinPrice);
+            }
+            if (filtering.MaxPrice != null)
+            {
+                commandText.Append($" AND p.\"Price\" <= @MaxPrice ");
+                command.Parameters.AddWithValue("@MaxPrice", filtering.MaxPrice);
+            }
+            if (filtering.MinWeight != null)
+            {
+                commandText.Append($" AND p.\"Weight\" >= @MinWeight");
+                command.Parameters.AddWithValue("@MinWeight", filtering.MinWeight);
+            }
+            if (filtering.MaxWeight != null)
+            {
+                commandText.Append($" AND p.\"Weight\" <= @MaxWeight ");
+                command.Parameters.AddWithValue("@MaxWeight", filtering.MaxWeight);
+            }
+        }
+
+        private async Task<int> GetTotalProteinCount(Filtering filtering)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = connection;
+                StringBuilder querryBuilder = new StringBuilder("SELECT COUNT(*) FROM \"Protein\" WHERE 1=1");
+                SetFilters(querryBuilder, filtering, command);
+                command.CommandText = querryBuilder.ToString();
+                connection.Open();
+                var result = await command.ExecuteScalarAsync();
+                if (result != null && int.TryParse(result.ToString(), out int count))
+                {
+                    return count;
+                }
+                return 0;
+            }
         }
 
 
