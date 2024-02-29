@@ -163,16 +163,16 @@ function ProteinList({proteins, setProteins}) {
                                         ) : (
                                             <form onSubmit={handleEditSubmit} className="editForm">
                                                 <label htmlFor="flavor">Flavor</label>
-                                                <input type="text" id="flavor" name="flavor" defaultValue={editedProtein.flavor} /><br /><br />
+                                                <input type="text" id="flavor" name="flavor" disabled defaultValue={editedProtein.flavor} /><br /><br />
                                                 
                                                 <label htmlFor="price">Price(€):</label>
                                                 <input type="text" id="price" name="price" defaultValue={editedProtein.price} /><br /><br />
                                                 
                                                 <label htmlFor="weight">Weight</label>
-                                                <input type="number" id="weight" name="weight" defaultValue={editedProtein.weight} /><br /><br />    
+                                                <input type="number" id="weight" name="weight" disabled defaultValue={editedProtein.weight} /><br /><br />    
                                                 
                                                 <label htmlFor="category">Category:</label>
-                                                <select id="category" name="category" defaultValue={editedProtein.category}>
+                                                <select id="category" name="category" disabled defaultValue={editedProtein.category}>
                                                     <option value="Anabolic">Anabolic</option>
                                                     <option value="Vegan">Vegan</option>
                                                     <option value="Recovery">Recovery</option>
