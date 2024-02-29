@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ProteinService from "../services/ProteinService";
 
 function ProteinList({proteins, setProteins}) {
     const [editId, setEditId] = useState(null);
@@ -12,19 +13,7 @@ function ProteinList({proteins, setProteins}) {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('https://localhost:44371//Api/Protein', {
-                params: {
-                    flavor: filter.flavor,
-                    minPrice: filter.minPrice,
-                    maxPrice: filter.maxPrice,
-                    minWeight: filter.minWeight,
-                    maxWeight: filter.maxWeight,
-                    sortBy: sorting.sortBy,
-                    sortOrder: sorting.sortOrder,
-                    pageNumber: paging.pageNumber,
-                    pageSize: paging.pageSize
-                }
-            });
+            const response = await ProteinService.getAll(filter, sorting, paging);
             setProteins(response.data.list);
             setPaging({ ...paging, totalPages: response.data.pageCount });
         } catch (error) {
@@ -47,9 +36,7 @@ function ProteinList({proteins, setProteins}) {
     
         if (deleteConfirmed) {
             try {
-                await axios.delete(`https://localhost:44371//Api/Protein/${id}`);
-                //const updatedProteins = proteins.filter(protein => protein.id !== id);
-                //setProteins(updatedProteins);
+                await ProteinService.remove(id);
                 fetchData();
                 alert("Protein deleted successfully!");
             } catch (error) {
@@ -72,9 +59,9 @@ function ProteinList({proteins, setProteins}) {
         const price = e.target.price.value;
         const weight = e.target.weight.value;
         const category = e.target.category.value;
-
+        const data ={ flavor, price, weight, category };
         try {
-            await axios.put(`https://localhost:44371//Api/Protein/${editId}`, { flavor, price, weight, category });
+            await ProteinService.update(editId, data);
             const updatedProteins = proteins.map(protein => {
                 if (protein.id === editId) {
                     return { ...protein, flavor, price, weight, category };

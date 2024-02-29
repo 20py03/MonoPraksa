@@ -2,9 +2,9 @@ import React from 'react';
 
 function Footer() {
   return (
-    <nav className="navbar">
+    <footer>
         <div class="welcome_header"><h3>Thank you for comming!</h3></div>
-    </nav>
+    </footer>
   );
 }
 

@@ -1,27 +1,29 @@
 import './App.css';
-import Footer from './Footer';
-import Navbar from './Navbar';
-import AddProtein from './AddProtein';
-import ProteinList from './ProteinList';
-import protein from './protein.jpg';
+import Home from './components/Home';
+import Footer from './components/Footer';
+import Navbar from './components/Navbar';
+import AddProtein from './components/AddProtein';
+import ProteinList from './components/ProteinList';
+import NotFound from './components/NotFound';
 import { useState } from 'react';
 //import AddProteinClass from './AddProteinClass';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [proteins, setProteins] = useState([]);
 
   return (
     <>
-    <Navbar/>
-    <div id="action_header" class="action_header"><h3>Add your favourite</h3></div>
-    <div className='addProteinContainer'>
-      <div><AddProtein setProteins={setProteins} /></div>
-      <div><img src={protein} alt="protein" className="proteinImage"/></div>
-    </div>
-    <hr></hr>
-    <div id="action_header" class="action_header"><h3>List of available proteins</h3></div>
-    <ProteinList setProteins={setProteins} proteins={proteins}/>
-    <Footer/>
+    <BrowserRouter>
+      <Navbar/>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/addProtein" element={<AddProtein setProteins={setProteins} />} />
+        <Route path="/proteinList" element={<ProteinList setProteins={setProteins} proteins={proteins} />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer/>
+    </BrowserRouter>
     </>
   );
 }
