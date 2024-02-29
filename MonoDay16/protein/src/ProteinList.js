@@ -9,40 +9,6 @@ function ProteinList({proteins, setProteins}) {
     const [sorting, setSorting] = useState({ sortBy: 'Price', sortOrder: 'ASC' });
     const [paging, setPaging] = useState({ pageNumber: 1, pageSize: 5, totalPages: 0});     
 
-    useEffect(() => {
-        let url = `https://localhost:44371/Api/Protein?PageNumber=${paging.pageNumber}&SortBy=${sorting.sortBy}&SortOrder=${sorting.sortOrder}&PageSize=${paging.pageSize}`;
-
-        if (filter.flavor) {
-            url += `&Flavor=${filter.flavor}`;
-        }
-        if (filter.minPrice) {
-            url += `&MinPrice=${filter.minPrice}`;
-        }
-        if (filter.maxPrice) {
-            url += `&MaxPrice=${filter.maxPrice}`;
-        }
-        if (filter.minWeight) {
-            url += `&MinWeight=${filter.minWeight}`;
-        }
-        if (filter.maxWeight) {
-            url += `&MaxWeight=${filter.maxWeight}`;
-        }
-
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(url);
-                setProteins(response.data.list);
-                setPaging({...paging, pageSize: response.data.pageSize, totalPages: response.data.pageCount });
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            }
-        }
-        const delay = setTimeout(() => {
-            fetchData();
-        }, 500);
-        return () => clearTimeout(delay);
-    }, [filter, sorting, paging.pageNumber]);
-
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -59,7 +25,8 @@ function ProteinList({proteins, setProteins}) {
                     pageSize: paging.pageSize
                 }
             });
-            setProteins(response.data.proteins);
+            setProteins(response.data.list);
+            setPaging({ ...paging, totalPages: response.data.pageCount });
         } catch (error) {
             console.error('Error fetching data: ', error);
         } finally {
@@ -67,14 +34,23 @@ function ProteinList({proteins, setProteins}) {
         }
     };
 
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            fetchData();
+        }, 500);
+        return () => clearTimeout(delay);
+    }, [filter, sorting, paging.pageNumber]);
+
+    
     const handleDelete = async (id) => {
         let deleteConfirmed = window.confirm("Are you sure you want to delete this protein?");
     
         if (deleteConfirmed) {
             try {
                 await axios.delete(`https://localhost:44371//Api/Protein/${id}`);
-                const updatedProteins = proteins.filter(protein => protein.id !== id);
-                setProteins(updatedProteins);
+                //const updatedProteins = proteins.filter(protein => protein.id !== id);
+                //setProteins(updatedProteins);
+                fetchData();
                 alert("Protein deleted successfully!");
             } catch (error) {
                 console.error("Error deleting protein: ", error);
